@@ -1,0 +1,88 @@
+# 2.1 Installing Express
+(1) node js파일명 --> 이 방법으로도 js파일을 실행시킬 수 있다
+(2) 이번 프로젝트에서는 package.json으로 실행 해 줄것이다
+(3) package.json 안에 main --> 내가 만들고 배포한 package를 다른 사람들이 설치하면 main을 사용한다(이번 프로젝트에서는 필요없음)
+(4) package.json 안에 scripts를 만들어 준다
+(5) scripts 는 실행하고 싶을 것을 말한다 즉, scripts안에 실행할 것을 적어준다
+ex) scripts={
+"start": "node index.js" // 이름은 자유롭게 지어줄 수 있다
+}
+(6) 그 후 npm run start 로 실행시킬 수 있다 // package.json이 존재하는 폴더 한정
+(7) npm install express 로 Express 패키지를 다운로드 받는다
+(8) node_modules, package-lock.json 파일이 생성도니다
+(9) node_modules 에는 npm으로 설치한 모든 패키지가 저장된다
+(10) express 는 혼자 작동되지 않기에 다른 패키지가 필요하다
+(11) node_modules 안에 express 안에 존재하는 package.json안에 dependencies는 express가 작동되기위해 필요한 패키지들을 나타낸다
+(12) express를 설치하는데 의존하고 있는 패키지가 있기 때문에 npm i express를 하면 그것들도 함께 설치된다
+(13) npm i express 를 했을 때 npm 이 알아서 dependencies에 express를 추가해준다
+
+#2.2
+npm i express
+- Created node_modules and package-lock.json and we deleted them
+- We're going to install express again but now we are not going to run npm i express
+-- We're going to run "npm i" only => We have node_modules and package.json again
+--> npm is very smart and it looks at your package.json and finds there is a dependencies entry. And it looks at the dependencies and npm installs them for you
+--> package.json is important b/c now it stores the info that our project needs to run
+- Very good b/c when you're working on a NodeJS project with a team or changing computers
+-- You do not want to upload node_modules to your GitHub
+-- node_modules can get super heavy
+-- If you want to give to your friend, all you have to do is copy package.json and index.js and that's it. You don't have to copy node_modules
+- package-lock: keeps your packages very secure
+-- Checks packages haven't been modified and checks with a hash --> really safe
+-- Basically locked
+-- Important b/c if my project works with package-lock and package.json, when your friend installs express again from the package.json, if you give package.json, package-lock.json, and index.js to your friend, and they run "npm i" only. Then, you're going to be sure that they got the exact same version number on everything.
+--> Very useful b/c that means your code is going to run for sure
+- We want to be very precise with the version numbers in package-lock.json
+-- But we don't have to manage any of this. This is done automatically for us by npm
+.gitignore file: Hide your node_modules from your GitHub
+- Add "/node_modules"
+Reason why you should close package.json
+- Some people have trouble when they do "npm i"
+- b/c if your package.json is open and you haven't saved and you run "npm i express"
+=> npm is going to modify your package.json b/c npm is going to try to add dependencies to pacakge.json
+- But b/c you haven't saved, there will be like a conflict on versions
+--> Every time you're going to run "npm install", make sure that you close or save your package.json
+Remember: Dependencies are what makes your project run
+- And you don't have to send your friend the node_modules folder
+
+# 2.3
+NodeJS에서 필요한 babel설치
+npm install --save-dev @babel/core
+npm install @babel/preset-env --save-dev
+
+babel.config.json파일 생성
+```
+{
+"presets": ["@babel/preset-env"]
+}
+```
+https://babeljs.io/setup#installation
+
+@babel/preset-env
+@babel/preset-env는 환경에 필요한 구문 변환을 세부적으로 관리할 필요 없이 최신 JavaScript를 사용할 수 있게 해주는 스마트한 preset입니다.
+https://babeljs.io/docs/en/babel-preset-env
+
+dependencies = 프로젝트에 필요한것들 다운(필수)
+devDependencies = 프로그래머가 더 편하게 코드를 짤수있게 도와주는 보조툴(보조)
+
+#2.4
+//nodeJS가 이해하는 코드를 쓰거나 babel을 사용한다.
+// babel은 우리가 작성한 최신 자바스크립트를 컴파일 해준다.
+// 이 말은 nodeJS가 자바스크립트를 문제없이 이해하도록 변환해준다는 뜻이다.
+// pacakge.json은 텍스트 파일인데 devDependencies는 개발자가 필요한 설정인데
+dependencies는 무슨 프로젝트를 사용할 지 알려주는데 devDependencies는
+ 프로젝트를 실행하기 위한 dependencies로 자동차로 따지면 가솔린과 같은 존재이다. 
+ devDependencies는 내가 운전을 더 잘하려면 음악이 있어야 하는 것과 비슷하다.
+  하나는 개발자에게, 다른 하나는 프로젝트 필요한 것으로 개발자에게 babel이 필요하다. 
+  babel이 devDependencies에 들어가면 모든 건 node_modules에 들어가므로 npm install --save-dev @babel/core에서
+   --save-dev를 지우고 npm install @babel/core를 사용하면 된다. 다른 곳에 생긴다면 그냥 옮기면 된다.
+    babel.config.json configuration file을 사용하면 된다.
+     꼭, package.json 파일을 닫거나 저장되어 있는지 확인해야한다.
+      babel을 이용해서 최신 문법 코드를 쓸 수 있는데 babel을 설정해 줄 필요가 있다.
+       babel.config.json을 만들면 babel이 알아서 이 파일을 찾고 내용을 들여다 본다.
+        presets은 babel을 위한 엄청 거대한 플러그인인데 preset-env가 가장 유명하다.
+         smart preset을 사용하면 최신 자바스크립트 문법을 사용할 수 있다.
+          preset에는 종류가 엄청 많은데, 그 중에 babel/preset-react, babel/preset-typescript 등을 사용할 수 있다.
+           preset은 플러그인을 알면 되는데 preset-env는 최신 자바스크립트를 쓸 수 있다.
+            babel.config.json 파일을 만들어서 내용을 붙여넣기 하면 되는데 @babel/core와 @bable/preset-env를 설정해야 한다.
+        
