@@ -85,4 +85,101 @@ dependencies는 무슨 프로젝트를 사용할 지 알려주는데 devDependen
           preset에는 종류가 엄청 많은데, 그 중에 babel/preset-react, babel/preset-typescript 등을 사용할 수 있다.
            preset은 플러그인을 알면 되는데 preset-env는 최신 자바스크립트를 쓸 수 있다.
             babel.config.json 파일을 만들어서 내용을 붙여넣기 하면 되는데 @babel/core와 @bable/preset-env를 설정해야 한다.
-        
+
+#3.0
+Make a src folder and all my application (the ones that have code and all the logic: index.js currently) is going to live inside of src
+=> Change package.json:
+"scripts": {
+"dev": "nodemon --exec babel-node src/index.js"
+},
+
+The file name doesn't have to be named index.js
+- For this, change to server.js and change package.json:
+"scripts": {
+"dev": "nodemon --exec babel-node src/server.js"
+},
+
+=> In server.js:
+import express from "express"; // import the package called express from "express"
+- NodeJS and npm are so smart that they know that when I do this, I'm looking for express in the node_modules
+--> So you don't need to say node_modules/express
+- npm and NodeJS are going to search for express in node_modules until they find it and they are going to call index.js
+- You don't need to worry node_modules b/c you're not going to write this anywhere in your life
+
+How do we use express:
+1) Create an express application
+const app = express();
+2) Now your application needs to listen
+- What is a server?
+-- A server is a computer that is always online
+-- Most of the time, it doesn't even have a screen or keyboard
+-- It's listening to request
+--- Request: just a connection
+-- You send a message to the server, and the server sends that message to me --> Request
+-- Server listens and responses
+-- We need to make the server wait for people to ask for stuff
+--> `app.listen()`
+-- listen() has a callback
+--- callback here: the function that will happen when our server starts
+--- Before writing the callback, first we need to tell the server what port the server is going to be listening to
+---- b/c your computer has many ports
+---- port: like a door or window into your computer
+---- some ports are open to the Internet
+
+Our server is going to be listening to our port
+- The high number ports are always available
+app.listen({port number}, callbackFunc); --> we use 4000 as the port number here (not required)
+
+How to go to a server
+- When you start a server in your computer, usually that server can be accessed through localhost
+http://localhost:4000/
+
+To kill your server and nodemon: ctrl/command + c
+- When you kill the server, the localhost refused to connect
+
+import express from "express";
+
+const PORT = 4000;
+
+const app = express();
+
+const handleListening = () =>
+console.log(`✅ Server listening on port http://localhost:${PORT} 🚀`);
+
+app.listen(PORT, handleListening);
+
+#3.1
+1. Once you create a server, you need to make server respond to user requests.
+2. Users request using HTTP protocol. This request is called GET request.
+3. When they type in the URL in the address bar and the page loads, they are actually sending a GET request to a server, getting a response and displaying a response on the browser.
+I hope this helps and I wish you guys the best! :)
+
+#3.2
+1. In order to make a server respond to a GET request from a user's browser, set up .get() that takes in a "home URL" and "eventHandler function" as below:
+const handleHome = () => console.log("Somebody is trying to go home.");
+app.get("/", handleHome);
+2. Having these codes in a server.js (has to placed after express server initiates), it will know how to respond to GET requests from users. However, since EventHandler does not return anything, it will keep the browser loading, waiting for a response from the server.
+I hope this helps! God bless you all! :)
+
+#3.3
+1. Though setting up .get("URL", "GET handler function") will handle a Get request, it will not respond to a GET reqeust.
+2. In order to make a server respond to a user's GET request, you need to modify the EventHandler function into an arrow function. Then, make the response argument .end() or .send() as below:
+const handleHome = (req, res) => {
+return res.send("I still love you.");
+};
+3. The first argument inside GET handler function is usually named "req," it takes in a request object.
+4. The second argument is usually named "res," and it takes in a response object.
+5. res.end() will end the response without returning anything; res.send() will return an input to the user's browser. For this particular example, the user will see a string "I still love you." on their browser when they request for a home ("/") URL page to a server.
+I hope this helps! Good luck to you all! :)
+
+#3.4
+app.get(path, callback [, callback ...])
+지정된 콜백 함수를 사용하여 HTTP GET 요청을 지정된 경로로 라우팅합니다.
+
+Request
+req 객체는 HTTP request를 나타내며 요청 query string, parameters, body, HTTP headers 등에 대한 속성을 가지고 있습니다.
+
+Response
+res 객체는 Express 앱이 HTTP request를 받을 때 보내는 HTTP response를 나타냅니다.
+
+https://expressjs.com/ko/4x/api.html#express.json
