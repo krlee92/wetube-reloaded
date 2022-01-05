@@ -183,3 +183,26 @@ Response
 res 객체는 Express 앱이 HTTP request를 받을 때 보내는 HTTP response를 나타냅니다.
 
 https://expressjs.com/ko/4x/api.html#express.json
+
+#3.5
+-middleware는 reqeust,response 사이에있는 소프트웨어이다.
+-모든 controller,handler는 middleware이다.
+-middleware에는 controller와같은 2개의 argument외에 한개가 더있다. req, res, 그리고 next
+ next();를호출하여 다음 메소드를 실행시키는것이 middleware이다.
+ middleware는 절대로 req에대해 response하지않는다.
+ ->return은 response한뒤 서버 연결을 끊기때문이다.
+
+#3.7
+setup Recap
+pacakge.json = scripts안에 실행어를 저장하여 편하게 실행
+dependencies,devDependencies = 필요한 툴들을 저장하여
+node_modules에 저장하게 도와줌. 실행어는 npm i
+
+devDependencies
+ -nodemon => 저장시 변화가있을때 scripts 커맨드를 자동실행
+ -bable-node => ES6등 최신코드를 쓰고싶을때 node.js가 이해할수있게 JavaScript를 바꿔줌
+  bable.config.json => babe-node를 쓸때 만들어서 필요한 플러그인 정보를 넣음.
+
+
+
+
