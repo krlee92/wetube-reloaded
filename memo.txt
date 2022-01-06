@@ -204,5 +204,38 @@ devDependencies
   bable.config.json => babe-node를 쓸때 만들어서 필요한 플러그인 정보를 넣음.
 
 
+#3.8
+Server Recap
+-Server : request를 listening하고있는 컴퓨터
+클라이언트와 서버는 개방된 포트를 통해 request 와 response 를 주고받는다.
+ ->브라우저는 서버에게 페이지를 request한다(페이지를 get한다).
+ get request에 반응하기위해서는
+ app.get("/", handleHome); "/"를 라우터라고 한다.
 
+#3.9
+controller Recap
+HTTP request 는 어떤 route(url) 에 대한 HTTP Method 요청이고 서버는 그 요청에 대한 response 를 해주어야한다. 여기서 중요한 것이 또 **controller**이다.
+# controller
+컨트롤러는 전달받은 request를 처리하고 response를 전달하기 위한 콜백함수이다.
+request가 왔으면 response해줘야 한다.
+controller는 항상 req,res를 아규먼트로 가진다.
+req,res에는 많은 메소드가 있다.
+ ->res.send()나 res.end() 등으로 respond해줘야한다.
 
+#3.10
+middleware
+ request와 response의 중간에 있는 소프트웨어이다.
+ app.get("/",middleware, handleHome)
+ 미들웨어는 request 오브젝트와, response 오브젝트 말고도 next 파라미터를 갖는다.
+ next 파라미터는 다음으로 request 를 처리할 콜백함수를 담고있다.
+미들웨어를 글로벌하게 사용하는법
+app.use(미들웨어1,미들웨어2...)를 만들어 get("/", ...)보다 위에 둔다.
+
+#3.11
+morgan
+ -morgan 패키지는 node.js 서버로 구성된 웹 환경에서
+  HTTP request 로그를 관리하기 위한 미들웨어이다.
+npm i morgan으로 설치한후
+import morgan from "morgan"으로 부른후 사용한다.
+ ->사용법은 app.use(morgan("dev..")) 등으로
+ morgan()이 미들웨어를 return해준다. 아규먼트는 5종류있다.
