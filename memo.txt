@@ -239,3 +239,9 @@ npm i morgan으로 설치한후
 import morgan from "morgan"으로 부른후 사용한다.
  ->사용법은 app.use(morgan("dev..")) 등으로
  morgan()이 미들웨어를 return해준다. 아규먼트는 5종류있다.
+
+#4.0
+라우터
+ 라우터는 작업중인 주제를 기반으로 URL을 그룹화한다
+ /users/edit -> Edit user
+ /videos/watch -> Watch Video
