@@ -242,6 +242,138 @@ import morgan from "morgan"으로 부른후 사용한다.
 
 #4.0
 라우터
+ 라우터는 url이 어떻게 시작하는지에 따라 나누는 방법
  라우터는 작업중인 주제를 기반으로 URL을 그룹화한다
  /users/edit -> Edit user
  /videos/watch -> Watch Video
+
+#4.1
+ 라우터의 그룹화 규칙에 따르면 로그인페이지는 
+ /users/login이어야 한다. 유저가 로그인하기때문이다.
+ 하지만 때때로 편의성을위해 예외를 두기도한다.
+ /login이 더 깔끔하기 때문이다.
+
+** 유저의 req-> 서버 res 흐름
+유저가 /videos로 시작하는 url에 들어가면
+express는 video라우터에 들어가서, url의 나머지주소를 찾는다.
+
+#4.2
+server.js에 라우터를 다 모아놓으면 보기안좋으니 정리한다.
+global,user,video라우터 각 3개의 폴더로 나눈다.
+그럼 server.js에서 각 라우터를 못찾을텐데 각각을 import해줘야한다.
+ 프로젝트에 있는 모든 파일은 분리된 모듈이다.
+ 다른 파일에서 쓸때는 그 파일에서 export, 쓸파일에서 import해야한다.
+
+#4.3
+ 라우터와 컨트롤러를 같은파일에 쓰는것은 좋지않다.
+ 컨트롤러는 많은 데이터를 가져와 처리할것이고 양이 방대해질것이기 때문
+ 따라서 컨트롤러 폴더/파일을 따로 만들어 관리하자.
+
+export
+ -> default export한것을 import할때 지정하는 이름은 같지않아도 됀다
+ 하지만 개별을 export할때는 반드시 서로 같아야 한다.
+ ->중괄호 열고 { edit, remove, ...}등 불러올것을 똑같이 적어넣어 오브젝트화시킨다.
+ ** 경로지정 규칙
+ ../ 지금있는 폴더에서 벗어남
+ ./ 지금있는 장소
+
+ #4.7
+ URL parameters
+ videoRouter.get("/:id", see);
+ /:id에서 :은 뒤에오는 id가 파라메터(변수)라고 express에게 알려준다.
+ 그 파라메터는 컨트롤러에서 req.params.id로 유저의 리퀘스트중 파라메터값이 무엇인지 확인가능.
+
+ **비디오 라우터에서
+  videoRouter.get("/upload", upload);
+  videoRouter.get("/:id", see);
+  videoRouter.get("/:id/edit", edit);
+  처럼 upload를 맨위로 올리는 이유가 있다.
+  express는 위에서부터 아래로 체크하기때문에, 만약 
+  videoRouter.get("/:id", see);
+  videoRouter.get("/upload", upload);
+  videoRouter.get("/:id/edit", edit);
+  이순서이고, 유저가 videos/upload로 request를 보내면
+  express는 :id를 먼저보고 /upload를 파라메터로 취급하게됀다.
+  =>이것의 해결을위해 express 정규식을 사용한다.
+  정규식을 사용하여 파라메터에 숫자만 올수있게 하는것이다.
+
+#4.8
+URL parameters 정규식
+  Routing
+  https://expressjs.com/ko/guide/routing.html
+  정규표현식 테스트 사이트
+  https://www.regexpal.com
+  정규식 표현 정리글
+  https://kasterra.github.io/regex1-the-basic-operation/
+
+  \w+: 모든 문자, 숫자 선택
+  \d+: 모든 숫자 선택
+
+#5.1
+
+**
+pug사용에대한 의문
+res.sendFile(__dirname, 'potato.html') 같이 html 파일을 바로 렌더링 할 수 있긴 합니다.
+하지만 request를 통해 각종 변수를 전달하지 못하기 때문에 미리 정해둔 화면 밖에는 보여줄 수가 없고,
+header 나 footer 등을 따로 partial로 만들어 관리하고 모든 파일에 첨부한다든지 할 수 있기 때문에 pug를 쓰는 것입니다.
+또한 pug외에도 ejs등 다른 template engine도 있습니다. 저는 써 본 것 중에서는 pug가 제일 깔끔하고 좋은 것 같네요.
+그리고 아예 react등의 framework를 사용하시면 템플릿 엔진 없이 view부분을 만드실 수 있습니다.
+
+pug사용
+send에 html을 보내기는 힘들다.
+pug를 사용하면 편하다.
+ 1) 깔끔한 html작성을 도와준다(닫지않아도됀다)
+ 2) html에 자바스클비트 코드를 포함시킬수있다.
+ 3) 반복이 있으면 partials폴더를 만들어 그곳에 반복파일을 만들고
+ html내에서 include 시키면됀다
+따라서 그걸 도와주는 pug를 설치한다 npm i pug
+->server.js에서 app.set("view engine", "pug")을 통해
+view엔진이 pug라는걸 express에 알려준다.
+**
+헤더에서 Express를 없애는 방법:
+app.disable('x-powered-by');
+->views폴더에 pug파일을 만든다.
+
+**
+디폴트로 express는 cwd + /views에서 pug 파일을 찾는다.
+cwd(current working directory)는 node.js를 실행하는 pacakge.json이 있는 디렉토리이므로
+현재 프로젝트는wetube/가 cwd이다.
+현 프로젝트에 views폴더는 wetube/src/안에 있기때문에 디폴트 view경로를 바꾼다.
+app.set("views", process.cwd() + "/src/views")으로 경로를 바꿀수있다.
+
+#5.3
+block기능
+ 상속을 해줄 base.pug파일에서 block을 만들어놓으면
+ 상속받는 파일에서 block안 내용을 채울수 있다.
+include기능
+ base.pug파일에서 include로 내용을추가해놓으면 모든 상속받는 파일에서
+ 그 내용이 적용됀다.
+Pug는 템플릿 상속을 지원합니다. 템플릿 상속은 block과 extends키워드를 통해 사용합니다.
+템플릿의 block에는 하위 템플릿을 대체할 수 있습니다.
+**
+ENOENT: no such file or directory, open '/home/ndm02002/wetube/src/views/base.pug'
+base 파일을 view 아래에 놓아야 됨 ㅠ
+
+#5.4
+변수variables 사용
+컨트롤러에서 변수를 같이 보내면, 그 변수를 pug에서도 사용할수있다.
+컨트롤러 => res.render("home", { pageTitle: "Home" });
+base.pug => title #{pageTitle} | Wetube
+
+#5.5
+pug recap
+1) 파이썬처럼 깔끔한 코드를 쓸수있다.
+  태그를 닫는것 x
+  모두 탭과 띄어쓰기로 구분됀다.
+2) express가 랜더링 할수있다.
+  app.set으로 어디서찾는지 설정해준뒤
+  res.render("pug파일명)
+3) include : 상속받는 모든파일에서 공통적으로 나타낼때
+
+4) base.pug 기본구조를 만들어 다른파일에서 똑같이 상속받을때
+block기능으로 상속받는 파일들이 블록 내용을 채워넣을수있다.
+
+5) variable
+자바스크립트 코드를 #{}로 쓸수있다.
+이때 변수도 쓸수있는데, 컨트롤러에서 랜더링할때 변수를 같이 보내주면
+그 변수를 pug파일에서 사용가능하다.
