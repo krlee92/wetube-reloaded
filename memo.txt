@@ -497,3 +497,12 @@ express app이 form의 value를 이해하려면 세팅이필요하다.
 server.js에 다음을 추가한다.
 app.use(express.urlencoded({ extended: true }));
  => 라우터를 사용하기전에 적용이 돼야한다.
+
+#6.4
+POST recap
+컨트롤러에서 쓰는 req.params는
+ 라우터에서 보낸 /:id(//d+)를 가리킨다.
+req.body는 pug에서 보낸 form에있는 value의 JavaScript representation이다.
+ => 이걸 이용하기위해 server.js에 설정을 해줘야한다.
+ => form안의 input에 name을 설정해줘야 req.body안의 데이터를 쓸수있다.
+ 
