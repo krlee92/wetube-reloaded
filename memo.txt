@@ -448,3 +448,52 @@ attribute에서 변수를 쓰는방법은 `${}` 혹은 + video.id 로 두가지�
 **ES6
 const { id } = req.params;
 const id = req.params.id;
+
+#6.1
+
+absoulte(/) relative URL 절대 상대
+현재 경로가 localhost:4000/video/edit인데
+a(href="/potato")이면 =>localhost:4000/potato로(absoulte)
+a(href="potato")이면 =>localhost:4000/video/potato로(relative)
+
+#6.2
+POST
+form(action="")의 action에는 submit을 누르면 데이터가 가게될곳을 적는다.
+디폴트 전송방식은 get이다(method="GET") POST로 바꿔주면 POST전송이됀다.
+POST를 쓰려면 라우터에서도 POST로 받아줘야한다.
+
+method는 form과 back end 사이의 정보 전송 방식이다.
+전송하는 데이터로 backend에서 database의 정보를 수정,추가,삭제..등을 할거면
+POST로 전송해야한다.
+
+#6.3
+get - 접근
+post - 전송
+redirect - 다시보내다
+parameter - 매개변수
+express는 form으로 보낸 데이터를 읽지못함
+
+**
+req.body
+req.body에는 form을 통해 submit된 데이터의 키-값 쌍을 포함합니다.
+기본적으로는 undefined이며 express.json() 또는 express.urlencoded()와 같은 바디 파싱 미들웨어를 사용할 때 값을 받아옵니다.
+
+```
+// 애플리케이션/json 파싱
+app.use(express.json());
+// application/x-www-form-urlencoded파싱 (form데이터 파싱)
+app.use(express.urlencoded({ extended: true }));
+```
+https://expressjs.com/ko/api.html#req.body
+
+express.urlencoded([options])
+Express에 내장된 미들웨어 기능입니다. urlencoded 페이로드로 들어오는 요청을 구문 분석하고 바디 파서를 기반으로 합니다.
+https://expressjs.com/ko/api.html#express.urlencoded
+
+
+POST로 보낸 데이터를 사용하려면 req.body로 사용가능하다.
+하지만 express는 아직 이걸 이해못한다.
+express app이 form의 value를 이해하려면 세팅이필요하다.
+server.js에 다음을 추가한다.
+app.use(express.urlencoded({ extended: true }));
+ => 라우터를 사용하기전에 적용이 돼야한다.
