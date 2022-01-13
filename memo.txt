@@ -507,3 +507,4 @@ req.body는 pug에서 보낸 form에있는 value의 JavaScript representation이
  => form안의 input에 name을 설정해줘야 req.body안의 데이터를 쓸수있다.
 **
 GET으로보낸 데이터는 req.query.inputName으로 사용할수있다!
+
