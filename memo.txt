@@ -508,3 +508,27 @@ req.body는 pug에서 보낸 form에있는 value의 JavaScript representation이
 **
 GET으로보낸 데이터는 req.query.inputName으로 사용할수있다!
 
+#6.8
+mongoose
+  자바스크립트 코드로 mongodb를 쓸수있게 해준다
+  1)npm i mongoose로 설치
+  2)db.js파일에서 import mongoose from "mongoose"
+  3)mongoose.connect("mongodb://127.0.0.1:27017/db명");
+    =>url주소는 cmd에서 mongo 커맨드 실행시 나오는 주소
+그외설정
+  const db = mongoose.connection;
+
+  const handleOpen = () => console.log("✅ Connected to DB");
+  const handleError = (error) => console.log("❌ DB Error", error);
+
+  db.on("error", handleError);
+  db.once("open", handleOpen);
+  on => 이벤트발생시 몇번이고 반복함
+  once => 이벤트발생시 한번만실행함
+
+#6.9
+Video model
+ 모델 이름은 대문자로 시작한다. Video.js 이게 관습이다.
+
+스키마:물리적인 장치로부터 논리적인 데이터 베이스 레코드(data base record)를
+매핑(mapping)하는 데 사용되는 정의 정보를 말한다.
