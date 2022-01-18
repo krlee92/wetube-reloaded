@@ -549,3 +549,29 @@ Video.find({}, (error, videos) => {
     return res.render("home", { pageTitle: "Home", videos });
   });
 Video.find()의 콜백함수((error, videos) =>) 안에 render를 넣는다.
+
+단점 : function안에 function을 넣어서 깔끔하지않아
+
+#6.13
+
+database 검색이 안끝났을때 render하는것을 방지하는법
+
+2. promise => callback의 최신버전
+async(비동기) -- await(수행될 때까지 기다려준다)
+=> 데이터베이스가 데이터 찾을때까지 기다려준다(다음 것이 먼저 수행되는 것을 막음)
+에러는 try-catch문으로 잡는다.
+
+async function
+async function 선언은 AsyncFunction객체를 반환하는 하나의 비동기 함수를 정의합니다.
+비동기 함수는 이벤트 루프를 통해 비동기적으로 작동하는 함수로, 암시적으로 Promise를 사용하여 결과를 반환합니다.
+그러나 비동기 함수를 사용하는 코드의 구문과 구조는, 표준 동기 함수를 사용하는것과 많이 비슷합니다.
+https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Statements/async_function
+
+export const home = async (req, res) => {
+  const videos = await Video.find({});
+  return res.render("home", { pageTitle: "Home", videos });
+};
+async function선언으로 비동기함수를 선언하고
+await를 써서 db에서 데이터를 찾을때까지 기다린다.
+
+장점: 직관적으로 코드를 보기 편하다.
