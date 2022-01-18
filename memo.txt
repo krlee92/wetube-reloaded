@@ -535,3 +535,17 @@ Video model
 
 #6.11
 
+Video.find( {}, callback?: )
+{} => search terms, 이게 비어있으면 모든 비디오를 찾게된다.
+
+#6.12
+database가 javascript 밖에서 수행되다보니(js와 비동기이다)
+find({}, ...)가 다른(console.log같은..)것 보다 늦게 수행된다.
+
+database 검색이 안끝났을때 render하는것을 방지하는법
+1.
+Video.find({}, (error, videos) => {
+    
+    return res.render("home", { pageTitle: "Home", videos });
+  });
+Video.find()의 콜백함수((error, videos) =>) 안에 render를 넣는다.
