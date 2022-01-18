@@ -658,3 +658,125 @@ String.prototype.endsWith()
 The endsWith() 메서드를 사용하여 어떤 문자열에서 특정 문자열로 끝나는지를 확인할 수 있으며,
 그 결과를 true 혹은 false로 반환한다.
 https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
+
+#6.22
+Edit part three
+1. Model.findByIdAndUpdate()로 불러오기와 수정 한방에 => 즐겁다
+2. Model.exist() =>true false 반환
+3. 생성이나 업데이트 전 작동해야할 function의 필요성 => Mongoose의 Middleware 활용
+
+#6.23
+1. DeprecationWarning에 대해.. useFindAndModify: false로 설정하면 해결됨
+2. middleware는 무조건 model이 생성되기 전에 만들어야 한다
+3. mongoose의 middleware에서 this키워드는 저장하고자 하는 문서를 가리킴
+4. middleware에서 해시태그 관리 구현
+
+cmd 커맨드
+1. 몽고 사용하기 
+> mongo
+
+2. 내가 가진 db 보기 
+> show dbs
+
+3. 현재 사용 중인 db 확인 
+> db
+
+4. 사용할 db 선택하기 
+> use dbName
+(현재 수업에서는 `use wetube`)
+
+5. db 컬렉션 보기 
+> show collections
+
+6. db 컬렉션 안에 documents 보기
+>  db.collectionName.find()
+(현재 수업에서는 `db.videos.find()`)
+
+7. db 컬렉션 안에 documents 내용 모두 제거하기 
+> db.collectionName.remove({})
+(현재 수업에서는 `db.videos.remove({})`)
+
+#6.24
+Static function(스태틱 함수)
+1. findByIdAndUpdate()에서는 save 훅업이 발생하지 않음 => 다른 방법을 알아보자
+2. Video.js에 function을 만들어서 epxort해서 관리하기 => 이것도 괜찮음 근데 다른것도 알아보자
+3. static을 사용하면 import 없이도 Model.function()형태로 사용이 가능함 => super cool
+
+Statics
+모델에 static 함수를 추가할 수도 있습니다.
+스키마에서 컴파일된 모델에 정적 "class" 메서드를 추가합니다.
+
+Static 사용하는 두 가지 방법
+```
+// Assign a function to the "statics" object of our animalSchema
+animalSchema.statics.findByName = function(name) {
+return this.find({ name: new RegExp(name, 'i') });
+};
+// Or, equivalently, you can call `animalSchema.static()`.
+animalSchema.static('findByBreed', function(breed) { return this.find({ breed }); });
+```
+https://mongoosejs.com/docs/guide.html#statics
+
+#6.25
+delete
+
+1. Delete Video 구현
+2. Delete는 Remove를 대체하며 충분한 이유가 있지 않은 이상 Delete를 사용
+
+Model.findOneAndDelete()
+Model.findOneAndRemove()
+
+이 둘은 정말 약간의 차이가 있는데 대부분의 상황에서 타당한 이유가 없는 한
+delete를 사용하라고 되어 있음.
+https://www.zerocho.com/category/MongoDB/post/579ecb1fc097d015000404dd
+
+여기 글을 읽어보니 몽고 db는 롤백이 안되서 remove를 하면 다시 되돌릴 수 없기에
+remove보다 delete를 사용하라고 권장하는듯
+
+#6.26
+Search
+1. Model.sort()로 정렬 방식 변경
+2. Search 구현
+3. get 메소드에서 form 값을 가져오기 위해서는 req.query 이용
+
+Query.prototype.sort()
+정렬 순서를 설정합니다. 개체가 전달되면 허용되는 값은 asc, desc, 오름차순, 내림차순, 1 및 -1입니다.
+https://mongoosejs.com/docs/api.html#query_Query-sort
+
+req.query
+라우트 안에 query string parameter를 포함하고 있는 객체로, URL에서 데이터를 가져올 때 주로 사용한다.
+예) ?keyword="food" => {keyword: "food"}
+query parse가 비활성화로 설정되면 빈 객체 {}이고, 그렇지 않으면 구성된 query parse의 결과입니다.
+https://expressjs.com/ko/api.html#req.query
+
+#6.27
+Search
+1. Model.find()를 통한 Search
+2. 오퍼레이터를 통한 Model.find()의 고도화 (mongoDB)
+  =>정규식을 통해서 search기능을 정교하게.
+
+Model.find()
+documents를 찾습니다. (findOne과 다르게 전체 document를 찾습니다.)
+Mongoose는 명령이 전송되기 전에 모델의 스키마와 일치하도록 필터를 캐스팅합니다.
+https://mongoosejs.com/docs/api.html#model_Model.find
+
+정규표현식
+https://www.regexpal.com
+
+몽고DB regex ($regex)
+몽고DB에서 정규표현식을 사용하기 위해 사용하는 키워드
+쿼리의 패턴 일치 문자열에 대한 정규식 기능을 제공합니다.
+https://docs.mongodb.com/manual/reference/operator/query/regex
+
+RegExp mdn
+RegExp 생성자는 패턴을 사용해 텍스트를 판별할 때 사용합니다.
+https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/RegExp
+
+RegExp 사용 방법
+RegExp 객체는 리터럴 표기법과 생성자로써 생성할 수 있습니다.
+리터럴 표기법의 매개변수는 두 빗금으로 감싸야 하며 따옴표를 사용하지 않습니다.
+생성자 함수의 매개변수는 빗금으로 감싸지 않으나 따옴표를 사용합니다.
+```
+/ab+c/i 를 아래 RegExp 생성자를 이용해서 만들 수 있습니다.
+new RegExp(/ab+c/, 'i') // 리터럴 표기법
+new RegExp('ab+c', 'i') // 생성자 함수
