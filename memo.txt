@@ -619,3 +619,19 @@ Exception & validation
 2. Schema parameter : default
 3. Schema CreatedAt에 Date.now()가 아닌 Date.now를 적는 이유 : 생성될때만 실행되도록
  =>videoSchema 에서 default: Date.now() 라고 하면 그 schema가 있는 파일을 저장하는 시간이 default 로 저장댐
+
+#6.18
+More Schema (몽구스 스키마)
+몽구스 스키마 타입 확인
+Mongoose 스키마는 Mongoose 모델을 구성하기 위한 객체로 생각할 수 있습니다.
+https://mongoosejs.com/docs/schematypes.html
+
+몽구스 스키마 타입 정의
+몽구스의 모든 것은 스키마로 시작합니다. 각 스키마는 MongoDB 컬렉션에 매핑되고 해당 컬렉션 내 문서의 모양을 정의합니다.
+https://mongoosejs.com/docs/guide.html
+
+#6.19
+정규식 regular expression
+1. mongoose가 부여한 id를 사용하기 위해 id에 숫자만 사용가능하게 설정한 Router부분 변경
+- http://regexpal.com 을 통한 정규식 생성하기
+2. id를 통해 db 내 색인, 해당 데이터 사용하기
