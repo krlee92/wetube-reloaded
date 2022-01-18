@@ -635,3 +635,26 @@ https://mongoosejs.com/docs/guide.html
 1. mongoose가 부여한 id를 사용하기 위해 id에 숫자만 사용가능하게 설정한 Router부분 변경
 - http://regexpal.com 을 통한 정규식 생성하기
 2. id를 통해 db 내 색인, 해당 데이터 사용하기
+
+#6.20
+Edit Video
+1. .exec()에 대한 간략한 설명
+2. 사용자가 존재하지 않는 ID에 접근할 경우 => if {404.pug}
+3. 일반적으로 에러를 if에 처리, return으로 함수 종료
+4. join()으로 배열을 문자열로 통합
+
+#6.21
+1. post 복습
+2. postEdit 구현, 일일히 수정 => 안 즐겁다
+3. startWith()로 # 유무 확인
+4. 조건부 연산자 ?를 통한 간결한 조건문
+
+String.prototype.startsWith()
+startsWith() 메소드는 어떤 문자열이 특정 문자로 시작하는지 확인하여
+결과를 true 혹은 false로 반환합니다.
+https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith
+
+String.prototype.endsWith()
+The endsWith() 메서드를 사용하여 어떤 문자열에서 특정 문자열로 끝나는지를 확인할 수 있으며,
+그 결과를 true 혹은 false로 반환한다.
+https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
