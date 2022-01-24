@@ -923,3 +923,65 @@ MongoStore
 
 MongoDB의 경우 connect-mongo를 사용한다. => npm i connect-mongo
 =>세션을 mongodb에 저장한다.
+
+#7.13
+Uninitialized Sessions
+방문한 모든 사람, 로그인하지않은사람, 봇의 session을 저장하는게 좋을까?
+ =>로그인한사람의 세션만을 저장하는것이 좋다.
+
+**
+DB 미들웨어에서
+resave: request에서 새로 생성된 session과 기존에 있던 session이 똑같을 때에도 다시 저장할 것인가?
+-> 대부분의 경우 false, 공식문서에서도 false를 권장하며 true는 deprecated 상태
+
+saveUninitialized : true
+ => 따로 값을 설정하지 않은 전달 받은 날것의 세션을 즉시 Store에 저장 후 세션 주인에게 쿠키를 (답장하듯) 넘겨 준다.
+
+saveUninitialized : false
+  => req.session 속 값을 수정하는 그 순간에(session.user=user) 세션을 Store에 저장 후 그제야 쿠키를 전달한다.
+  => 세션을 수정하는 행위 자체가 initialize(초기화)하는것이다.
+  => 즉 로그인할때 세션에 데이터를 저장하는행위에서만 DB에 세션저장이 됀다.
+
+#7.14
+Expiration and Secrets
+
+1. .env 파일 만들기
+2. env 파일을 .gitignore에 추가하기. (git에 업로드 하지 않기 위해)
+3. 비밀로 해야 하는 string을 process.env.[환경변수이름]으로 바꾸기
+
+
+Set-Cookie
+Set-Cookie HTTP 응답 헤더는 서버에서 사용자 브라우저에 쿠키를 전송하기 위해 사용됩니다.
+https://developer.mozilla.org/ko/docs/Web/HTTP/Headers/Set-Cookie
+
+쿠키에 설정가능한 옵션
+Domain
+쿠키가 적용되어야 하는 호스트를 지정.
+
+Expires
+HTTP 타임스템프로 기록된 쿠키의 최대 생존 시간(수명).
+
+Max-Age
+쿠키가 만료될 때 까지의 시간 (밀리세컨드)
+
+secret
+이것은 세션 ID 쿠키에 서명하는 데 사용되는 비밀입니다.
+https://www.npmjs.com/package/express-session
+
+COOKIE_SECRET에 넣을 랜덤 문자열 생성 사이트
+https://randomkeygen.com/
+
+#7.15
+Environment Variables 환경변수
+
+dotenv
+Dotenv는 .env 파일에서 process.env로 환경 변수를 로드하는 제로 종속성 모듈입니다.
+npm i dotenv
+
+프로젝트에서 될수있는한 가장먼저 dotenv를 import해줘야한다.
+ => 이번프로젝트는 init.js가 가장빠르다.
+ =>import방법은 두가지있다.
+ =>방법1. require(dotenv가필요한 모든파일에)
+    방법2. import "dotenv/config"
+https://www.npmjs.com/package/dotenv
+
