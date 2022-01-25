@@ -1169,3 +1169,40 @@ https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api#request-token
 
 3. 사용자 정보 가져오기
 https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api#req-user-info
+
+#8.0
+Edit Profile
+
+로그인하지 않은 유저는 edit페이지에 접근할수 없어야한다.
+ =>로그인하지않았다면, middlewares.js에서 lcoals의 user오브젝트는 정의돼지 않으므로,
+  에러가 난다.
+  =>로그인하지 않았다면 빈 오브젝트를 돌려주어 일단 에러는 막는다.res.locals.loggedInUser = req.session.user || {};
+
+#8.1
+
+Protector and Public Middlewares
+
+각 페이지마다 접근 가능한 사람을 제한해야 한다.
+=>middleware를 추가하여 각 라우터에 용도에 맞게 붙혀준다.
+=>all()함수는 get.post둘다있는 라우터에 둘다 적용할수있게 해준다.
+
+#8.2
+
+edit Profile
+POST로 입력값을 받아와서 업데이트를 하면
+DB값은 업데이트돼지만, 세션은 업데이트돼지 않는다.
+세션도 업데이트를 해줘야 바뀐 값이 반영됀 user 오브젝트가
+세션에 들어가게 됀다.
+
+Model.findByIdAndUpdate()
+
+문서의 _id 필드로 mongodb findAndModify 업데이트 명령을 실행합니다. findByIdAndUpdate(id, ...)는 findOneAndUpdate({ _id: id }, ...)와 동일합니다.
+
+```
+// 사용 예시
+Model.findByIdAndUpdate(id, { name: 'jason bourne' }, options, callback)
+
+// is sent as (+타입스크립트)
+Model.findByIdAndUpdate(id, { $set: { name: 'jason bourne' }}, options, callback)
+```
+https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
