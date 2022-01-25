@@ -985,3 +985,187 @@ npm i dotenv
     방법2. import "dotenv/config"
 https://www.npmjs.com/package/dotenv
 
+
+#7.16
+Github Login
+
+1.사용자를 github로 보낸다.
+2.사용자가 github로그인하고, github는 유저를 웹사이트로 redirect시킨다(토큰,유저 정보랑같이)
+3.토큰을 이용하여 유저정보를 얻는다.
+
+
+https://github.com/login/oauth/authorize?client_id=입력값&allow_signup=false
+
+Authorizing OAuth Apps
+다른 사용자가 OAuth 앱을 승인하도록 할 수 있습니다.
+GitHub의 OAuth 구현은 웹 브라우저에 대한 액세스 권한이 없는 앱에 대한 표준 인증 코드 부여 유형 및 OAuth 2.0 장치 인증 부여를 지원합니다.
+
+Web application flow
+웹 애플리케이션 흐름: 브라우저에서 실행되는 표준 OAuth 앱에 대해 사용자에게 권한을 부여하는 데 사용됩니다.
+앱 사용자에게 권한을 부여하는 웹 애플리케이션 흐름은 다음과 같습니다.
+1. 로그인하려는 사이트에서 유저의 GitHub identity를 request하기 위해 유저를 GitHub 페이지로 리다이렉트시킵니다.
+2. 유저는 리다이렉트된 GitHub에서 승인을 하고, GitHub에 의해 다시 로그인하려는 사이트로 리다이렉트됩니다.
+3. 로그인 하려는 사이트는 유저의 액세스 토큰을 통해 API에 접근합니다.
+https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps
+
+깃허브 OAuth Apps Setting
+GitHub API를 사용하기 위해 등록한 애플리케이션입니다.
+https://github.com/settings/developers
+
+Scopes for OAuth Apps (OAuth 앱의 범위)
+https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps
+
+Creating an OAuth App (OAuth앱 만들기)
+https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app
+
+#7.17
+
+긴 URL은 그대로 쓰는게아니라, 변수를만들어 관리하자.
+
+
+&scope=read:user
+&scope=read:user user:email
+
+Scopes for OAuth Apps
+OAuth 앱은 초기 리디렉션에서 범위를 요청할 수 있습니다. %20을 사용하여 공백으로 구분하여 여러 범위를 지정할 수 있습니다.
+// 사용 예시
+```
+https://github.com/login/oauth/authorize?client_id=...&scope=user%20repo_deployment
+```
+https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps
+
+URLSearchParams
+URLSearchParams 인터페이스는 URL의 쿼리 문자열에 대해 작업할 수 있는 유틸리티 메서드를 정의합니다.
+https://developer.mozilla.org/ko/docs/Web/API/URLSearchParams
+
+URLSearchParams.toString()
+toString() 은 URLSearchParams 인터페이스의 메소드로서, URL에서 사용할 수 있는 쿼리 문자열을 리턴합니다.
+https://developer.mozilla.org/ko/docs/Web/API/URLSearchParams/toString
+
+https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps
+
+#7.18
+
+깃허브에서 보내준 코드로 access_token이란것을 받아야하는데,
+그를위해 POST Request를 보내야한다.
+POST reqeust를 보내는데는, fetch()를 쓰면 좋은데(), 서버에는 없고 브라우저에만 있는 기능이다.
+ =>node-fetch라는 패키지로 쓸수있다.
+
+Users are redirected back to your site by GitHub
+
+사용자가 요청을 수락하면 GitHub는 코드 매개변수의 임시 code와 상태 매개변수의 이전 단계에서 제공한 state를 사용하여 사이트로 다시 리디렉션합니다.
+
+POST Request를 할 때, 반드시 필요한 파라미터들
+client_id, client_secret, code
+```
+POST https://github.com/login/oauth/access_token
+```
+https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#2-users-are-redirected-back-to-your-site-by-github
+
+#7.19
+node-fetch
+JS와 NodeJS는 다른 플랫폼이기때문에 fetch를 쓰려면 node-fetch를 써야한다.
+npm i node-fetch
+
+github에서 받은 코드로 access_token을 얻을수있는데, GitHub API를 이용해 user 정보를 얻을수있다.
+
+[2022.01.24] HTTP headers (fetch의 header의 역할)
+
+HTTP headers는 는 클라이언트와 서버가 request(or response)로 부가적인 정보를 전송할 수 있도록 해줍니다
+
+Accept
+돌려줄 데이터 타입에 대해 서버에게 알려주는 역할을 합니다
+MIME 타입입니다
+(📌MIME type이란 웹에서 사용되는 확장자라고 생각하시면 되며
+type/subtype으로 구성되어 있습니다)
+
+Authorization
+보호된 리소스에 대한 접근을 허용하여 서버로 User agent를 인증하는 자격증명을 보내는 역할을 합니다
+
+[출처]
+HTTP headers: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers
+MIME tyeps: https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
+
+****
+Error [ERR_REQUIRE_ESM]: require() of ES Module 오류 발생 시 두 가지 방법 중 하나로 해결할 수 있습니다.
+
+1. node-fetch 3버전이 아닌 2버전으로 다운그레이드된 버전을 설치해서 해결할 수 있습니다.
+npm i node-fetch@2.6.1 (강의과 같은 버전)
+https://www.npmjs.com/package/node-fetch
+
+2. cross-fetch 사용 (CommonJS, ES6 모듈, Typescript등에서도 사용가능)
+node-fetch대신 사용할 수 있는 cross-fetch 패키지를 통해 해결할 수 있습니다. node-fetch와 사용법은 동일합니다.
+Node, 브라우저 및 React Native용 범용 WHATWG Fetch API.
+npm i cross-fetch
+```
+import fetch from 'cross-fetch';
+
+fetch(...)
+```
+https://www.npmjs.com/package/cross-fetch
+
+node-fetch 버전3 문제
+v3의 node-fetch는 ESM 전용 모듈입니다. require()로 가져올 수 없습니다. ESM으로 전환할 수 없는 경우 CommonJS와 호환되는 v2를 사용하십시오. 중요한 버그 수정은 v2에 대해 계속 게시됩니다.
+
+Use the access token to access the API
+액세스 토큰을 사용하면 유저를 대신해 API에 요청할 수 있습니다.
+```
+Authorization: token OAUTH-TOKEN
+GET https://api.github.com/user
+```
+https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#3-use-the-access-token-to-access-the-api
+****
+
+#7.20
+
+Github REST API (User)
+사용자 API를 사용하면 인증된 사용자에 대한 공개 및 비공개 정보를 얻을 수 있습니다.
+https://docs.github.com/en/rest/reference/users
+
+Get the authenticated user
+인증된 사용자가 기본 인증 또는 사용자 범위의 OAuth를 통해 인증되면 응답에 공개 및 비공개 프로필 정보가 나열됩니다. 인증된 사용자가 사용자 범위 없이 OAuth를 통해 인증된 경우 응답에는 공개 프로필 정보만 나열됩니다.
+
+Add an email address for the authenticated user
+https://docs.github.com/en/rest/reference/users#add-an-email-address-for-the-authenticated-user
+
+List public email addresses for the authenticated user
+인증된 사용자의 공개 이메일 주소 나열
+https://docs.github.com/en/rest/reference/users#list-public-email-addresses-for-the-authenticated-user
+
+#7.21
+로그인 규칙을 어떻게 만들것인가?
+=>깃허브 email이 verified, primary이고, DB에 똑같은 email이 있으면 로그인시킨다.
+=> DB에 일치하는 데이터가없으면, 깃허브 유저정보를 이용해 유저를 생성시키고, 로그인시킨다.
+
+#7.22
+
+로그아웃
+
+Session.destroy(callback)
+
+세션을 파괴하고 req.session 속성을 설정 해제합니다. 완료되면 콜백이 호출됩니다.
+```
+req.session.destroy(function(err) {
+// cannot access session here
+})
+```
+https://www.npmjs.com/package/express-session
+
+#7.23
+
+카카오 로그인 구현하기 (REST API)
+카카오 로그인 구현하실 분들은 아래 링크들을 참조하시면 됩니다.
+구현 방식은 깃허브 로그인과 거의 동일합니다.
+https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api
+
+0. 애플리케이션 등록
+https://developers.kakao.com/docs/latest/ko/getting-started/app
+
+1. 인가 코드 받기
+https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api#request-code
+
+2. 토큰 받기
+https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api#request-token
+
+3. 사용자 정보 가져오기
+https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api#req-user-info
