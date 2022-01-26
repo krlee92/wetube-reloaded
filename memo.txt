@@ -1206,3 +1206,145 @@ Model.findByIdAndUpdate(id, { name: 'jason bourne' }, options, callback)
 Model.findByIdAndUpdate(id, { $set: { name: 'jason bourne' }}, options, callback)
 ```
 https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
+
+#8.3
+edit Profile
+DB의 업데이트는 프론트엔드에 반영돼지않는다.
+프론트엔드는 session에서 정보를 얻기 때문이다.
+session은 로그인할때 한번만 작성돼고있다.
+
+업데이트후 따라서 세션도 업데이트 해줘야한다.
+
+#8.4
+change password 
+
+github로그인의경우, password가 없기때문에, 비밀번호 변경페이지를 못봐야한다.
+
+#8.5
+
+change password #2
+
+password를 해쉬화 하기위해해서는 모델의pre(save)를 발동시켜야하는데,
+그를위해 두가지 방법이있다.
+
+1.pre save middleware를 거치고 User.create()를 사용해야한다.
+2.user.save()를해도 pre save middleware를 작동시킨다.
+
+**
+DB를 바꿔도 세션안에있는데이터는 그대로니, user.save()후에 세션도 업데이트해주자.
+
+
+
+bcrypt
+// 비밀번호 비교
+const match = await bcrypt.compare(password, user.passwordHash);
+https://www.npmjs.com/package/bcrypt
+
+Model.findByIdAndUpdate()
+findByIdAndUpdate로는 pre('save')를 실행시키지 않기 때문에 비밀번호가 해시화되지 않고 DB에 저장되게 된다. 그래서 save()메서드를 통해 pre('save')를 실행시켜 비밀번호를 해시화한 후 DB에 저장될 수 있도록 해준다.
+https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
+
+Model.prototype.save()
+findByIdAndUpdate를 이용해서 Document업데이트 후 save하기
+앞서 했던 것처럼 findByIdAndUpdate를 통해 Document를 업데이트 시키고 업데이트된 최신 Document를 받아서 save를 할 수도 있습니다.
+(자바스크립트로 진행하신다면 $set은 사용하지 않으셔도 됩니다.)
+```
+const updatedUser = await User.findByIdAndUpdate(loggedInUser?._id, { $set: { password: newPassword } }, { new: true });
+await updatedUser?.save();
+```
+https://mongoosejs.com/docs/api.html#model_Model-save
+
+await user.save();
+return res.redirect("/users/logout");
+
+위와 같은 형태로 구현하면 해커들이 로직파악 후에 302 redirect를 프록시를 통해서 막은 후에 이전 세션 데이터도 활용할 수 있게 됩니다. 좀더 안전하게 하려면 아래와 같이 확실하게 destroy해주는게 좋아보여요.
+
+req.session.destroy();
+return res.redirect('/login');
+
+추가로 이전비밀번호와 변경비밀번호가 같으면 튕겨주는게 좋을 듯 합니다.
+
+if (oldPassword === newPassword) {
+return res.status(400).render('users/change-password', {
+pageTitle,
+errorMessage: 'The old password equals new password',
+});
+}
+
+#8.6
+File Upload
+파일업로드를 하기위해 준비해야할2가지
+1.input + label 조합
+   label(for="avatar") Avatar
+   input(type="file", id="avatar", name="avatar", accept="image/*")
+2. Multer middleware 사용 => npm i multer
+  2-1) form에 enctype="multipart/form-data속성 추가.
+    => form(method="POST", enctype="multipart/form-data")
+  2-2) multer middleware를 작성
+    => import multer from "multer";
+    => export const uploadFiles = multer({ dest: "uploads/" });
+  2-3) router에 적용.
+    =>.post(uploadFiles.single("avatar"), postEdit);
+    순서가 중요하다. postEdit전에 uploadFiles를 실행해야
+    컨트롤러에서 req.file을 사용할수있다.
+
+https://kasterra.github.io/what-is-multipart-form-data/
+https://www.npmjs.com/package/multer
+
+Multer
+Multer는 주로 파일 업로드에 사용되는 multipart/form-data를 처리하기 위한 node.js 미들웨어입니다.
+주의! Multer는 multipart(multipart/form-data)가 아닌 form을 처리하지 않습니다.
+npm i multer
+enctype="multipart/form-data"
+https://www.npmjs.com/package/multer
+
+multer(opts)
+dest 또는 storage: 파일을 저장할 위치
+fileFilter: 허용되는 파일을 제어하는 ​​함수
+limits: 업로드된 데이터의 한계
+preservePath: 기본 이름 대신 파일의 전체 경로 유지
+
+사용 예시
+```
+const multer = require('multer')
+const upload = multer({ dest: './public/data/uploads/' })
+app.post('/stats', upload.single('uploaded_file'), function (req, res) {
+// req.file is the name of your file in the form above, here 'uploaded_file'
+// req.body will hold the text fields, if there were any
+console.log(req.file, req.body)
+});
+```
+
+.single(fieldname)
+이름이 fieldname인 단일 파일을 수락합니다.
+단일 파일은 req.file에 저장됩니다.
+
+#8.7
+****
+DB에는 파일을 직접 저장하지않는다.
+  =>파일 위치만 저장하고, 업로드 폴더에 파일을저장한다.
+
+edit Profile => File Upload
+
+사용자가 프로필수정시 프사를 안바꿀수도있다.
+그런경우 req.file은 undefined이다.
+이부분을 유의해, 세션에있는 avatarUrl을 이용한다.
+  const {
+      session: {
+        user: { _id, avatarUrl },
+      },
+  avatarUrl: file ? file.path : avatarUrl,
+
+#8.8
+
+Static Files
+
+폴더를 브라우저에 노출시켜야 브라우저가 파일을 읽을수있다.
+app.use("/uploads", express.static("uploads"));
+
+
+express.static(root, [options])
+
+Express에 내장된 미들웨어 기능입니다. 정적 파일을 제공하며 serve-static을 기반으로 합니다. root 인수는 static asset을 제공할 root 디렉토리를 지정합니다. 이 함수는 req.url을 제공된 root 디렉토리와 결합하여 제공할 파일을 결정합니다.
+
+https://expressjs.com/ko/api.html#express.static
