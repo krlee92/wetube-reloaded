@@ -1365,3 +1365,58 @@ Byte to MB
 1000000 Bytes(백만 Bytes) = 1 MB (in decimal)
 1000000 Bytes = 0.95367431640625 MB (in binary)
 https://www.gbmb.org/bytes-to-mb
+
+#8.11
+Video Owner
+비디오모델에 owner스키마를 줘서 유저id를저장시킨다.
+ObjectId는 몽구스에서만 제공하는것으로
+type: mongoose.Schema.Types.ObjectId로 쓸수있다.
+이것은 String타입이 아니다.
+
+Cannot read properties of undefined (reading '_id') 오류 해결 방법
+
+혹시 위와 같은 오류가 발생하시면 아래와 같이 if loggedInUser를 추가해주시면 됩니다.
+```
+if loggedInUser
+if String(video.owner) === String(loggedInUser._id)
+a(href=`${video.id}/edit`) Edit Video →
+br
+a(href=`${video.id}/delete`) Delete Video →
+```
+
+Mongoose Schema Types
+https://mongoosejs.com/docs/schematypes.html
+
+ObjectId
+ObjectId는 일반적으로 고유 식별자에 사용되는 특수 유형입니다. ObjectId는 클래스이고 ObjectId는 객체입니다. 그러나 종종 문자열로 표시됩니다. toString()을 사용하여 ObjectId를 문자열로 변환하면 24자의 16진수 문자열을 얻습니다.
+_someId: Schema.Types.ObjectId,
+https://mongoosejs.com/docs/schematypes.html#objectids
+
+Mongoose Typescript ObjectIds및 다른 타입 설정
+https://mongoosejs.com/docs/typescript.html#objectids-and-other-mongoose-types
+
+#8.12
+8.11에서 video의 owner스키마에 user의 id를 저장시켰으니,
+이를 이용해서 video모델을 불러올때, user의 정보를 가져올수있다.
+const video = await Video.findById(id).populate("owner");
+owner스키마의 ref속성에서 User를 참조하는것을 알려줬으므로,
+populate("owner");에 owner를 주면 몽구스가 user정보를 찾아
+video모델에 넣어준다.(이메일,이름,아이디..등)
+
+
+
+populate
+Mongoose에는 populate()를 통해 다른 컬렉션의 문서를 참조할 수 있습니다. Population은 문서의 지정된 경로를 다른 컬렉션의 문서로 자동 교체하는 프로세스입니다. 단일 문서, 여러 문서, 일반 개체, 여러 일반 개체 또는 쿼리에서 반환된 모든 개체를 채울 수 있습니다.
+const story = await Story.findOne({ title: 'Casino Royale' }).populate('author');
+https://mongoosejs.com/docs/populate.html
+
+Population
+https://mongoosejs.com/docs/populate.html#population
+
+#8.13
+
+User모델에도 videos 스키마를 추가해서 비디오목록을 표시할수있게.
+videos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }],
+  => 이제 유저를 찾을때 가진 비디오목록의 정보까지 찾을수있다.
+  const user = await User.findById(id).populate("videos");
+  
