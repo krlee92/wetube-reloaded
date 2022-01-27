@@ -1419,4 +1419,13 @@ User모델에도 videos 스키마를 추가해서 비디오목록을 표시할�
 videos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }],
   => 이제 유저를 찾을때 가진 비디오목록의 정보까지 찾을수있다.
   const user = await User.findById(id).populate("videos");
-  
+
+#8.14
+Bugfix
+user의 videos를 추가할때 컨트롤러에서 save()를 해줘야하는데,
+그때마다 비밀번호의 해싱이 일어난다.=> 비밀번호가 바뀐다.
+  =>if this.isModefied("password")메서드를 사용하여 비밀번호가 바뀔때만 해싱하도록하자.
+
+video.owner의 id는 object이고, req.session.user._id는 String이므로
+!==타입 변화에서 같게 보여도 결과는 에러가 난다.
+(String)으로 캐스팅을 해주자.
