@@ -1574,3 +1574,26 @@ https://webpack.js.org/plugins/mini-css-extract-plugin/#publicpath
 
 CssMinimizerWebpackPlugin
 https://webpack.kr/plugins/css-minimizer-webpack-plugin/
+
+#9.6
+프론트엔드 파일을 수정할때, 백엔드서버를 재시작하기싫고,
+백엔드파일을 수정할떄, 프론트엔드서버를 재시작하기싫다.
+그러기위해, pacakge.json설정을 바꾸자.
+nodemon.json파일을 만들어 추가하자.
+
+Watch and WatchOptions
+Webpack은 파일이 변경될 때마다 이를 감지하여 다시 컴파일 할 수 있습니다.
+
+watch
+watch 모드를 켭니다. 이제 초기 빌드 후 webpack은 해석 된 파일의 변경 사항을 계속 감시합니다. (webpack.config.js에 entry에 지정한 파일을 감시한다.)
+https://webpack.kr/configuration/watch/
+
+Nodemon
+nodemon은 디렉토리의 파일 변경이 감지되면 노드 응용 프로그램을 자동으로 다시 시작하여 node.js 기반 응용 프로그램을 개발하는 데 도움이 되는 도구입니다.
+https://github.com/remy/nodemon
+
+Sample nodemon.json
+https://github.com/remy/nodemon/blob/master/doc/sample-nodemon.md
+
+Nodemon Config file
+https://github.com/remy/nodemon#config-files
