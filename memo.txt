@@ -1659,4 +1659,160 @@ Document.fullscreen (en-US) (더 이상 사용되지 않는 속성)
 https://developer.mozilla.org/ko/docs/Web/API/Fullscreen_API
 
 #11.8
-Controls Events part One
+Controls Events
+
+mousemove, mouseleave는 있지만 mousestop은 없다.
+그래서 있는 두개를 이용해야
+
+1. 아무것도 없는 상태에서 비디오 위로 마우스 움직임.
+2. 즉시 showing이라는 클래스가 추가되고 3초짜리 showing을 지우는 타이머를 시작시킴.
+3. 2초후 마우스를 다시 움직임.
+4. if문 구절 때문에 3초짜리 showing을 지우는 타이머가 사라져 버리고, 타이머 값이 null로 바뀜 즉 타이머 사라짐.
+5.그대로 클래스 showing만들고 다시 또다른 3초짜리 showing을 지우는 타이머 시작!.
+
+Mouse events
+https://developer.mozilla.org/en-US/docs/Web/API/Element#mouse_events
+
+기본 로직
+1. 마우스를 움직이게 되면 기존 setTimeout이 clearTimeout에 의해 지워지고, 새로운 setTimeout이 생성되고, 실행되게 된다.
+2. 그 상태에서 마우스를 움직이지 않으면 새로운 setTimeout이 3초 후에 실행되게 되서 비디오 컨트롤바를 숨긴다.
+3. 움직이게 되면 다시 위의 1번처럼 기존 setTimeout은 clearTimeout에 의해 지워지고, 새로운 setTimeout이 생성된다.
+
+#12.0
+Register View Controller
+
+템플릿을 렌더링하지않는 뷰를 api view라고한다.(요즘대세)
+  보통은 백엔드가 인증, DB등을처리하고
+  프론트엔드는 바닐라JS, 리엑트JS, Svelte등으로 만듬
+    우리의 유튭사이트는 Server Side Rendering방식이다.
+      =>서버가 템플릿을 렌더링하는일까지 처리하는거
+
+동영상시청이 끝남
+-> videoPlayer.js에 비디오 엘레멘트에 이벤트리스너 등록(조회가끝날때, 조회수올려주는 URL호출)
+  비디오 엘레멘트만 쓸수있는 이벤트들이있다(timeupdate, ended등..)
+->videoPlayer.js에서 비디오id를 찾아, POST request를 보내고싶은데 비디오id를 찾을방법이 없다.
+-> HTML의 Data Attributes기능을 이용하여 id정보를 pug에서 저장하여 videoPlayer.js로 가져온다.
+  div#videoContainer(data-id=video._id)
+    나중에 element.dataset으로 데이터에 접근할수있다.
+->이를 이용하여 POST reqeust를보내는 컨트롤러를 완성한다.
+const handleEnded = () => {
+  const { id } = videoContainer.dataset;
+  fetch(`/api/videos/${id}/view`, {
+    method: "POST",
+  });
+};
+
+
+ended event
+audio 또는 video 미디어가 끝까지 재생 완료 된 시점에 발생합니다.
+ended 이벤트는 미디어(오디오나 비디오)의 끝 부분에 도달했거나 더 이상 사용할 수 있는 데이터가 없어서 재생 또는 스트리밍이 중지되면 시작됩니다.
+https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/ended_event
+
+HTMLMediaElement
+https://developer.mozilla.org/ko/docs/Web/API/HTMLMediaElement
+
+Data Attributes
+HTML5 특정 요소와 연관되어 있지만 확정된 의미는 갖지 않는 데이터에 대한 확장 가능성을 염두에 두고 디자인되었습니다. data-* 속성은 표준이 아닌 속성이나 추가적인 DOM 속성, Node.setUserData()과 같은 다른 조작을 하지 않고도, 의미론적 표준 HTML 요소에 추가 정보를 저장할 수 있도록 해줍니다.
+https://developer.mozilla.org/ko/docs/Learn/HTML/Howto/Use_data_attributes
+
+#12.2
+
+status(), sendStatus()는 다르다.
+status()는 렌더링을하거나, 다른거를할때 쓴다(req에의한 연결을 끊지못해 계속 대기한다.)
+  statuscode를 정하는것일 뿐이다.
+sendStatus()는 연결을 끊는다.
+  statuscode를 보내면서 연결을 끊음
+
+#13.0
+Recorder setup
+
+프론트엔드에서 async await를 쓰기위해서는 
+regenerator-runtime을 설치하여 import해줘야한다.
+ => main.js에서 import하고, main.js를 base.pug에서 불러 모든곳에서 사용하게하자.
+
+
+MediaDevices.getUserMedia()
+MediaDevices 인터페이스의 getUserMedia() 메서드는 사용자에게 미디어 입력 장치 사용 권한을 요청하며, 사용자가 수락하면 요청한 미디어 종류의 트랙을 포함한 MediaStream (en-US)을 반환합니다. 스트림은 카메라, 비디오 녹화 장치, 스크린 공유 장치 등 하드웨어와 가장 비디오 소스가 생성하는 비디오 트랙과, 마이크, A/D 변환기 등 물리적과 가상 오디오 장치가 생성하는 오디오 스트림, 그리고 그 외의 다른 종류의 스트림을 포함할 수 있습니다.
+보통, MediaDevices 싱글톤 객체는 다음과 같이 navigator.mediaDevices를 사용해 접근합니다.
+navigator.mediaDevices.getUserMedia(constraints);
+https://developer.mozilla.org/ko/docs/Web/API/MediaDevices/getUserMedia
+
+constraints
+요청할 미디어 유형과 각각에 대한 요구사항을 지정하는 MediaStreamConstraints 객체. constraints 매개변수는 두 개의 구성 요소, video와 audio를 가지는 객체로, 요청할 미디어 유형에 대해 설명합니다. 둘 중 적어도 하나는 지정해야 합니다.
+{ audio: true, video: true }
+
+regenerator-runtime
+Regenerator로 컴파일된 생성기 및 비동기 함수를 위한 독립 실행형 런타임입니다.
+npm i regenerator-runtime
+import regeneratorRuntime from "regenerator-runtime";
+https://www.npmjs.com/package/regenerator-runtime
+
+#13.1
+Video Preview
+HTMLMediaElement srcObject
+
+HTMLMediaElement 인터페이스의 srcObject 속성은 HTMLMediaElement와 연결된 미디어의 소스 역할을 하는 객체를 설정하거나 반환합니다.
+그 객체는 MediaStream, MediaSource, Blob 또는 파일(Blob에서 상속됨)일 수 있습니다.
+
+사용 예시
+이 예에서 카메라의 MediaStream은 새로 생성된 요소에 할당됩니다.
+```
+const mediaStream = await navigator.mediaDevices.getUserMedia({video: true});
+const video = document.createElement('video');
+video.srcObject = mediaStream;
+```
+
+https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/srcObject
+
+#13.2
+Recording Video
+
+MediaRecorder
+MediaStream Recording API의 MediaRecorder 인터페이스는 미디어를 쉽게 녹화할 수 있는 기능을 제공합니다. MediaRecorder() 생성자를 사용하여 생성됩니다.
+https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder
+
+MediaRecorder()
+기록할 MediaStream이 지정된 새 MediaRecorder 개체를 만듭니다.
+
+stream
+기록될 MediaStream입니다. 이 소스 미디어는 navigator.mediaDevices.getUserMedia()를 사용하여 생성된 스트림이나 audio, video 또는 canvas 요소에서 가져올 수 있습니다.
+
+MediaRecorder.start()
+미디어 녹화를 시작합니다. 이 메서드는 선택적으로 밀리초 단위의 값을 가진 타임슬라이스 인수를 전달할 수 있습니다.
+
+MediaRecorder.stop()
+저장된 데이터의 최종 Blob을 포함하는 dataavailable 이벤트가 발생하는 시점에서 기록을 중지합니다.
+
+MediaRecorder ondataavailable
+MediaRecorder.stop()이 실행될 때 발생하는 이벤트이다.
+https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/ondataavailable
+
+#13.3
+
+URL.createObjectURL()은 브라우저 메모리 상에서만 쓸수있는 URL을 생성한다.
+
+URL.createObjectURL()
+
+URL.createObjectURL() 정적 메서드는 주어진 객체를 가리키는 URL을 DOMString으로 반환합니다.
+해당 URL은 자신을 생성한 창의 document가 사라지면 함께 무효화됩니다.
+
+object
+객체 URL을 생성할 File, Blob, MediaSource 객체.
+const objectURL = URL.createObjectURL(object)
+
+https://developer.mozilla.org/ko/docs/Web/API/URL/createObjectURL
+
+#13.4
+
+Downloading File 
+
+a
+download
+링크로 이동하는 대신 사용자에게 URL을 저장할지 물어봅니다. 값을 지정할 수도 있고, 지정하지 않을 수도 있습니다.
+https://developer.mozilla.org/ko/docs/Web/HTML/Element/a
+
+MediaRecorder
+https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/MediaRecorder
+
+Mime type
+https://developer.mozilla.org/en-US/docs/Web/Media/Formats/codecs_parameter
