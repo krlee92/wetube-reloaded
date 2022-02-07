@@ -1767,6 +1767,10 @@ https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/srcObject
 #13.2
 Recording Video
 
+ondataavailable
+ =>MediaRecorder.stop()이 실행될때 발생하는 이벤트이다.
+
+
 MediaRecorder
 MediaStream Recording API의 MediaRecorder 인터페이스는 미디어를 쉽게 녹화할 수 있는 기능을 제공합니다. MediaRecorder() 생성자를 사용하여 생성됩니다.
 https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder
@@ -1816,3 +1820,101 @@ https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/MediaRecorder
 
 Mime type
 https://developer.mozilla.org/en-US/docs/Web/Media/Formats/codecs_parameter
+
+#14.0
+
+FFmpeg
+오디오 및 비디오를 기록, 변환 및 스트리밍하는 완벽한 크로스 플랫폼 솔루션입니다. FFmpeg는 인간과 기계가 만든 거의 모든 것을 디코딩, 인코딩, 트랜스코딩, mux, demux, 스트리밍, 필터링 및 재생할 수 있는 최고의 멀티미디어 프레임워크입니다.
+https://www.ffmpeg.org/
+
+FFmpeg WebAssembly
+WebAssembly에서 제공하는 브라우저 및 노드용 FFmpeg
+ffmpeg.wasm은 FFmpeg의 순수한 Webassembly/Javascript 포트입니다. 그것은 비디오 및 오디오 녹음, 변환, 스트리밍 등을 브라우저 내부에서 할 수 있도록 합니다.
+FFmpeg WebAssembly를 사용하는 이유는 FFmpeg를 사용해서 브라우저로 하여금 비디오 파일을 변환하기 위함이다.
+npm install @ffmpeg/ffmpeg @ffmpeg/core
+https://github.com/ffmpegwasm/ffmpeg.wasm
+https://www.npmjs.com/package/@ffmpeg/ffmpeg
+
+WebAssembly
+WebAssembly(Wasm)는 스택 기반 가상 머신을 위한 이진 명령 형식입니다. Wasm은 프로그래밍 언어를 위한 이식 가능한 컴파일 대상으로 설계되어 클라이언트 및 서버 응용 프로그램을 위해 웹에 배포할 수 있습니다.
+
+웹 어셈블리는 자바스크립트의 무덤일까?
+https://www.youtube.com/watch?v=KjgDxBLv0bM
+
+맥에서 FFMpeg설치하기
+brew install ffmpeg
+
+#14.1
+
+1. http://localhost:4000/node_modules/@ffmpeg/core/dist/ffmpeg-core.js 404 (Not Found) 또는
+createFFmpegCore is not defined 오류 해결 방법
+(@ffmpeg/ffmpeg": "^0.10.0 이상으로 진행시)
+
+위와 같은 오류가 뜨시는 분들은 http://localhost:3000/node_modules/@ffmpeg/core/dist/에서 ffmpeg-core.js, ffmpeg-core.wasm, ffmpeg-core.worker.js파일들을 찾지 못해 생기는 에러이기 때문에 아래와 같이 corePath를 지정해주시면 됩니다.
+https://github.com/ffmpegwasm/ffmpeg.wasm#why-it-doesnt-work-in-my-local-environment
+```
+createFFmpeg({
+corePath: 'https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js',
+log: true
+});
+```
+
+(위의 1번 다른 해결 방법)
+기존 FFmpeg를 삭제하시고, 다운그레이드된 버전으로 설치하시면 됩니다.
+npm i @ffmpeg/ffmpeg@0.9.7 @ffmpeg/core@0.8.5
+
+2. Uncaught (in promise) ReferenceError: SharedArrayBuffer is not defined 오류 해결 방법
+FFmpeg를 실행했을 때, 콘솔창에 위와 같은 오류가 난다면 server.js에 app.set()아래에 함수를 추가해주시면 됩니다.
+
+오류 원인 : SharedArrayBuffer는 cross-origin isolated된 페이지에서만 사용할 수 있습니다. 따라서 ffmpeg.wasm을 사용하려면 Cross-Origin-Embedder-Policy: require-corp 및 Cross-Origin-Opener-Policy: same-origin를 header에 설정해 자체 서버를 호스팅해야 합니다.
+https://github.com/ffmpegwasm/ffmpeg.wasm/issues/263
+
+// server.js
+```
+app.use((req, res, next) => {
+res.header("Cross-Origin-Embedder-Policy", "require-corp");
+res.header("Cross-Origin-Opener-Policy", "same-origin");
+next();
+});
+```
+
+FFmpeg Usage
+https://github.com/ffmpegwasm/ffmpeg.wasm#usage
+
+FFmpeg API
+https://github.com/ffmpegwasm/ffmpeg.wasm/blob/master/docs/api.md#api
+
+#14.2
+
+MEMFS에서 데이터 읽기
+ffmpeg.FS('readFile', 'video.mp4');
+https://github.com/ffmpegwasm/ffmpeg.wasm/blob/master/docs/api.md#ffmpegfsmethod-args-any
+
+Uint8Array (양의 정수 8비트 배열)
+Uint8Array 형식 배열은 8비트 부호 없는 정수 배열을 나타냅니다.
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
+
+ArrayBuffer
+ArrayBuffer 객체는 raw binary data buffer를 나타내는 데 사용됩니다. 다른 언어에서는 종종 "byte array"이라고 하는 byte array입니다.
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer
+
+Blob
+Blob 객체는 파일류의 불변하는 미가공 데이터를 나타냅니다. 텍스트와 이진 데이터의 형태로 읽을 수 있으며, ReadableStream으로 변환한 후 그 메서드를 사용해 데이터를 처리할 수도 있습니다.
+https://developer.mozilla.org/ko/docs/Web/API/Blob
+
+#14.3
+Thumbnail
+
+You can extract images from a video, or create a video from many images
+비디오에서 이미지를 추출하거나 여러 이미지에서 비디오를 만들 수 있습니다. 이것은 비디오에서 초당 하나의 비디오 프레임을 추출하고 foo-001.jpeg, foo-002.jpeg 등의 파일로 출력합니다. 이미지는 새로운 WxH 값에 맞게 크기가 조정됩니다. 제한된 수의 프레임만 추출하려면 위의 명령을 -frames:v 또는 -t 옵션과 함께 사용하거나 -ss와 함께 사용하여 특정 시점부터 추출을 시작할 수 있습니다.
+ffmpeg -i foo.avi -r 1 -s WxH -f image2 foo-%03d.jpeg
+https://www.ffmpeg.org/ffmpeg.html
+
+Blob()
+Blob() 생성자는 새로운 Blob 객체를 반환합니다. 해당 블롭의 콘텐츠는 매개변수로 제공한 배열을 이어붙인 값입니다.
+var aBlob = new Blob( array[, options]);
+array는 ArrayBuffer, ArrayBufferView (en-US), Blob, DOMString 객체 또는 Blob 안에 들어갈 이러한 객체가 혼합되어 있다. DOMString은 UTF-8로 인코딩 된다.
+```
+var oMyBlob = new Blob(aFileParts, {type : 'text/html'}); // the blob
+```
+https://developer.mozilla.org/ko/docs/Web/API/Blob/Blob
