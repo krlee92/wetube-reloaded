@@ -1918,3 +1918,47 @@ array는 ArrayBuffer, ArrayBufferView (en-US), Blob, DOMString 객체 또는 Blo
 var oMyBlob = new Blob(aFileParts, {type : 'text/html'}); // the blob
 ```
 https://developer.mozilla.org/ko/docs/Web/API/Blob/Blob
+
+#14.4
+
+메모리 관리를 위해 다쓰고 링크와 파일을 삭제해줘야
+
+MEMFS에서 파일 삭제
+ffmpeg.FS('unlink', 'video.mp4');
+https://github.com/ffmpegwasm/ffmpeg.wasm/blob/master/docs/api.md#ffmpegfsmethod-args-any
+
+FFMpeg 비디오, 오디오 파일 포맷 컨벤션
+https://ffmpeg.org/ffmpeg.html#Video-and-Audio-file-format-conversion
+
+URL.revokeObjectURL()
+URL.revokeObjectURL() 정적 메서드는 이전에 URL.createObjectURL()을 통해 생성한 객체 URL을 해제합니다. 객체 URL을 더는 쓸 일이 없을 때 사용해서, 브라우저가 이제 해당 객체를 메모리에 들고 있지 않아도 된다고 알려주세요.
+```
+URL.revokeObjectURL(objectURL)
+objectURL: createObjectURL()을 통해 생성한 객체 URL을 나타내는 DOMString.
+```
+https://developer.mozilla.org/ko/docs/Web/API/URL/revokeObjectURL
+
+#14.6
+
+Multer에서 파일을 2개이상 올릴때는 single과는 다른 메서드를 쓴다.
+
+Multer
+.fields(fields)
+필드로 지정된 혼합 파일을 허용합니다.
+파일 배열이 있는 객체는 req.files에 저장됩니다.
+필드는 이름과 선택적으로 maxCount가 있는 객체의 배열이어야 합니다.
+
+예시
+```
+[
+{ name: 'avatar', maxCount: 1 },
+{ name: 'gallery', maxCount: 8 }
+]
+```
+https://www.npmjs.com/package/multer
+
+video 태그 poster 속성
+video 태그의 poster 속성은 비디오를 다운로드하는 동안이나 사용자가 재생 버튼을 누르기 전까지 비디오 대신 보여줄 이미지를 명시합니다.
+만약 poster 속성이 명시되어 있지 않으면, 브라우저는 비디오의 첫 번째 프레임(frame)을 대신 보여줄 것입니다.
+video poster="URL"
+http://tcpschool.com/html-tag-attrs/video-poster
