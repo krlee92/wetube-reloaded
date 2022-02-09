@@ -1962,3 +1962,125 @@ video 태그의 poster 속성은 비디오를 다운로드하는 동안이나 �
 만약 poster 속성이 명시되어 있지 않으면, 브라우저는 비디오의 첫 번째 프레임(frame)을 대신 보여줄 것입니다.
 video poster="URL"
 http://tcpschool.com/html-tag-attrs/video-poster
+
+#15.0
+
+Express Flash
+Express 애플리케이션용 플래시 메시지
+플래시는 플래시 메시지를 정의하고 요청을 리디렉션하지 않고 렌더링할 수 있는 기능이 있는 connect-flash의 확장입니다.
+npm i express-flash
+
+사용 예시
+```
+app.get('/', function (req, res) {
+req.flash('info', 'Welcome');
+res.render('index', {
+title: 'Home'
+})
+});
+app.get('/addFlash', function (req, res) {
+req.flash('info', 'Flash Message Added');
+res.redirect('/');
+});
+```
+https://www.npmjs.com/package/express-flash
+
+connect-flash
+https://www.npmjs.com/package/connect-flash
+
+#16.3
+fetch()를 이용해서 데이터 보내기
+fetch() request에 포함할 수 있는 또 다른 선택적 속성은 body입니다. body 속성은 HTTP(또는 API) request의 일부로, 보내려는 모든 데이터를 포함할 수 있습니다. API request를 할 때, 데이터가 포함된 헤더와 함께 전송됩니다. fetch()를 사용하여 데이터를 보낼 때 보낸 데이터가 JSON인지 쿼리 문자열인지 API에 알려주는 Content-type을 지정해야 합니다.
+https://gomakethings.com/how-to-send-data-to-an-api-with-the-vanilla-js-fetch-method/
+
+fetch()를 이용해서 JSON객체 보내기
+https://gomakethings.com/how-to-send-data-to-an-api-with-the-vanilla-js-fetch-method/#sending-data-as-a-json-object
+
+댓글창에서 스페이스를 눌렀을 때 비디오도 같이 재생되는 문제 해결 방법
+```
+const handlePressSpace = async (event) => {
+if (event.target === document.body && event.code === "Space") {
+await handlePlayVideo();
+}
+};
+
+#16.4
+
+express.text([options])
+Express에 내장된 미들웨어 기능입니다.
+body-parser를 기반으로 request payload로 전달한 문자열을 파싱합니다.
+https://expressjs.com/ko/api.html#express.text
+
+express.json([options])
+Express에 내장된 미들웨어 기능입니다.
+body-parser를 기반으로 request payload로 전달한 JSON을 파싱합니다.
+문자열을 받아서 json으로 바꿔줍니다.
+주의할 점은 express.json()은 header에 Content-Type이 express.json()의 기본 값인 "application/json"과 일치하는 request만 보는 미들웨어를 반환합니다.
+다시 말해, headers: { "Content-type": "application/json" }인 request만 express.json()을 실행한다.
+https://expressjs.com/ko/api.html#express.json
+
+fetch()를 이용해서 JSON객체 보내기
+https://gomakethings.com/how-to-send-data-to-an-api-with-the-vanilla-js-fetch-method/#sending-data-as-a-json-object
+
+#16.5
+
+request 가 발생할때 from frontend to backend,
+ 쿠키도 같이 간다 => 백엔드에서 세션을 쓸수있다.
+ =>세션에는 user정보도 들어가있다.
+
+HTTP 상태 코드
+
+200 OK
+요청이 성공적으로 되었습니다.
+
+201 Created
+요청이 성공적이었으며 그 결과로 새로운 리소스가 생성되었습니다. 이 응답은 일반적으로 POST 요청 또는 일부 PUT 요청 이후에 따라옵니다.
+
+400 Bad Request
+이 응답은 잘못된 문법으로 인하여 서버가 요청을 이해할 수 없음을 의미합니다.
+
+404 Not Found
+서버는 요청받은 리소스를 찾을 수 없습니다. 브라우저에서는 알려지지 않은 URL을 의미합니다.
+
+https://developer.mozilla.org/ko/docs/Web/HTTP/Status
+
+#16.6
+
+다중 경로 populating하기 (Populating Multiple Paths)
+(비디오 안에 댓글 안에 유저 또는 비디오를 찾을 때 사용 가능)
+```
+// 방법1: populate를 배열로 감싸고 그 안에 컬렉션을 전달
+Manager.find()
+.populate({
+path : 'users',
+populate: [
+{ path: 'cars' },
+{ path: 'houses' }
+]
+});
+
+// 방법2: 공백으로 구분된 컬렉션 문자열을 전달
+Manager.find()
+.populate({
+path : 'users',
+populate: 'cars houses'
+});
+```
+
+유저가 작성한 댓글 DB에 저장하기
+```
+const foundUser = await User.findById({ _id: loggedInUser._id }).populate("comments");
+
+if (!foundUser) {
+return res.sendStatus(404);
+}
+
+const createdComment = await Comment.create({ owner: loggedInUser._id, video: id, text });
+foundUser.comments.push(createdComment);
+foundUser.save();
+```
+
+Location.reload()
+Location.reload() 메서드는 새로고침 버튼처럼 현재 리소스를 다시 불러옵니다. 새로고침은 SECURITY_ERROR DOMException (en-US)과 함께 거부당할 수 있습니다. 이는 location.reload()를 호출한 스크립트의 출처와 Location 객체를 소유한 문서의 출처가 다를 때 발생합니다.
+window.location.reload()
+https://developer.mozilla.org/ko/docs/Web/API/Location/reload
