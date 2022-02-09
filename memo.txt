@@ -2084,3 +2084,73 @@ Location.reload()
 Location.reload() 메서드는 새로고침 버튼처럼 현재 리소스를 다시 불러옵니다. 새로고침은 SECURITY_ERROR DOMException (en-US)과 함께 거부당할 수 있습니다. 이는 location.reload()를 호출한 스크립트의 출처와 Location 객체를 소유한 문서의 출처가 다를 때 발생합니다.
 window.location.reload()
 https://developer.mozilla.org/ko/docs/Web/API/Location/reload
+
+#16.7
+
+append 마지막에 붙임
+prepend 처음에 붙임
+
+#16.8
+
+res.json([body])
+JSON response를 보냅니다. 이 메서드는 JSON.stringify()를 사용하여 JSON 문자열로 변환된 매개변수인 response를 보냅니다.
+
+사용 예시
+```
+res.json(null)
+res.json({ user: 'tobi' })
+res.status(500).json({ error: 'message' })
+res.status(201).send({ hello: 'message' }) // res.send()로도 가능
+```
+https://expressjs.com/ko/api.html#res.json
+
+Response.json()
+Response 인터페이스의 json() 메서드는 Response 스트림을 가져와 읽습니다.
+(백엔드의 res.json() 또는 res.send()를 통해 보낸 JSON데이터를 가져온다.)
+https://developer.mozilla.org/en-US/docs/Web/API/Response/json
+
+HTTP Method 종류와 의미들 올려둡니다.
+
+주요 메소드 5가지
+
+GET : 리소스 조회
+POST : 요청 데이터 처리, 주로 데이터 등록에 사용
+PUT : 리소스를 대체, 해당 리소스가 없으면 생성
+PATCH : 리소스를 일부만 변경
+DELETE : 리소스 삭제
+기타 메소드 4가지
+
+HEAD: GET과 동일하지만 메시지 부분을 제외하고, 상태 줄과 헤더만 반환
+OPTIONS: 대상 리소스에 대한 통신 가능 옵션을 설명(주로 CORS에서 사용)
+CONNECT: 대상 자원으로 식별되는 서버에 대한 터널을 설정
+TRACE: 대상 리소스에 대한 경로를 따라 메시지 루프백 테스트를 수행
+
+출처 : https://kyun2da.dev/CS/http-%EB%A9%94%EC%86%8C%EB%93%9C%EC%99%80-%EC%83%81%ED%83%9C%EC%BD%94%EB%93%9C/
+
+#16.9
+
+챌린지 과제
+- 댓글 삭제하기 (삭제시 비디오나 유저 도큐먼트에서도 삭제 필요)
+
+추가로 구현해볼 만한 기능들
+- 댓글 추가 및 삭제시 실시간으로 댓글 갯수 변경
+- 댓글 수정하기
+- 좋아요
+- 좋아요 취소
+- 해시태그 클릭시 비디오 찾기
+
+Element.remove()
+Element.remove() 메서드는 해당 요소가 속한 트리에서 요소를 제거합니다.
+(remove대신 removeChild를 사용해서 엘리먼트 삭제도 가능)
+https://developer.mozilla.org/en-US/docs/Web/API/Element/remove
+
+querySelectorAll => 댓글들 개개마다 클래스를주고, 선택댓글을 삭제해야하니
+모든 엘레멘트를 선택해야.
+deleteCommentBtns.forEach((delteBtn)=>{
+    delteBtn.addEventListener("click", handleDelete);    
+  });
+이벤트리스너 또한 모든 엘레멘트 클릭이벤트에 대해 듣고있어야하니 forEach로 돌려준다.
+
+const comment = event.target.parentNode;
+  => event.target은 이벤트가일어난 그엘레멘트이고, .parentNode는 그 엘레멘트의 부모엘레멘트.
+  

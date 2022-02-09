@@ -50,10 +50,13 @@ export const postEdit = async (req, res) => {
   } = req.session;
   const { id } = req.params;
   const { title, description, hashtags } = req.body;
-  const video = await Video.exists({ _id: id });
+  const video = await Video.findById(id);
+  // const video = await Video.exists({ _id: id });
+   // exists(filter=조건문): video Object를 받는 대신 True or Flase를 return 받음 
   if (!video) {
     return res.status(400).render("404", { pageTitle: "Video not found." });
   }
+  
   if (String(video.owner) !== String(_id)) {
     req.flash("error", "You are not the the owner of the video.");
     return res.status(403).redirect("/");
@@ -158,5 +161,21 @@ export const createComment = async (req, res) => {
   });
   video.comments.push(comment._id);
   video.save();
-  return res.sendStatus(201);
+  return res.status(201).json({ newCommentId: comment._id });
+};
+
+export const deleteComment = async (req, res) => {
+  const {
+    session :{user},
+    params: {id},
+  } = req;
+  
+  console.log("user:" + user._id);
+  const comment = await Comment.findById(id);
+  if (String(comment.owner) !== String(user._id)) {
+    return res.status(403).redirect("/");
+  }
+  console.log(comment);
+  await Comment.findByIdAndDelete(id);
+  return res.status(200).json({ deletedCommentId: id });
 };
