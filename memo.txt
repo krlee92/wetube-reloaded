@@ -2154,3 +2154,33 @@ deleteCommentBtns.forEach((delteBtn)=>{
 const comment = event.target.parentNode;
   => event.target은 이벤트가일어난 그엘레멘트이고, .parentNode는 그 엘레멘트의 부모엘레멘트.
   
+#17.0
+
+Building the Backend
+
+babel-node는 개발용, 실행에 시간이좀걸림
+  =>배포용으로 구식 자바스크립트 코드로 해야하는데
+babel/cli을 쓴다.
+
+@babel/cli 설치
+npm install --save-dev @babel/cli
+Babel은 명령줄에서 파일을 컴파일하는 데 사용할 수 있는 내장 CLI와 함께 제공됩니다.
+https://babeljs.io/docs/en/babel-cli
+
+폴더 컴파일
+--out-dir 또는 -d 사용 가능
+```
+npx babel src --out-dir lib
+```
+https://babeljs.io/docs/en/babel-cli#compile-directories
+
+#17.1
+
+regeneratorRuntime
+Regenerator로 컴파일된 생성기 및 비동기 함수를 위한 독립 실행형 런타임입니다.
+
+// init.js
+```
+import "regenerator-runtime";
+```
+https://www.npmjs.com/package/regenerator-runtime
