@@ -2184,3 +2184,29 @@ Regenerator로 컴파일된 생성기 및 비동기 함수를 위한 독립 실�
 import "regenerator-runtime";
 ```
 https://www.npmjs.com/package/regenerator-runtime
+
+#17.2
+
+Building the Frontend
+
+Webpack Mode 설정 (두 가지 방법)
+```
+// 1. webpack.config.js 파일에 mode옵션을 설정하거나
+module.exports = { mode: 'development' };
+
+// 2. 또는 package.json script에 CLI 인수로 mode설정
+webpack --mode=development
+```
+주의! 만약 Mode를 설정하지 않으면 webpack은 production(배포)를 모드의 기본값으로 설정합니다.
+https://webpack.js.org/configuration/mode
+
+
+Babel로 컴파일시 파일이나 폴더 무시
+build:server를 할 때 포함되는 client 폴더는 필요하지 않기 때문에 아래와 같이 ignore해주시면 됩니다.
+```
+npx babel src --out-dir lib --ignore "src/client"
+```
+https://babeljs.io/docs/en/babel-cli#ignore-files
+
+
++ mode를 production으로 했음에도 코드가 한 줄로 축약되지 않으시는 분들은 optimization 옵션을 제거해주시면 됩니다.
