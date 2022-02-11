@@ -2251,3 +2251,13 @@ password를 사용자의 암호로 바꿉니다. myFirstDatabase를 연결이 �
 #17.5
 환경변수들은 heroku에서 설정해줘야한다.
 깃허브 로그인관련 GH_CLIENT, GH_SECRET또한 마찬가지
+
+#17.6
+
+GitHub Developer settings (깃허브 소셜 로그인 구현시)
+생성한 OAuth Apps의 Authorization callback URL를 최종 배포한 사이트 주소로 변경
+https://github.com/settings/developers
+
+Kakao Developer settings (카카오 소셜 로그인 구현시)
+깃허브와 동일하게 Redirect URL 변경 필요
+https://developers.kakao.com/console/app
