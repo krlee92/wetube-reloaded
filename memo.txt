@@ -2247,3 +2247,7 @@ Connect to DB
 password를 사용자의 암호로 바꿉니다. myFirstDatabase를 연결이 기본적으로 사용할 데이터베이스 이름으로 바꿉니다. 모든 옵션 매개변수가 URL로 인코딩되었는지 확인하십시오.
 
 .env에서 설정한 환경 변수를 heroku에 Config Vars에 추가
+
+#17.5
+환경변수들은 heroku에서 설정해줘야한다.
+깃허브 로그인관련 GH_CLIENT, GH_SECRET또한 마찬가지
